@@ -29,6 +29,7 @@ public class BoardController {
 		model.addAttribute("list", list);
 		model.addAttribute("pDto", pDto);
 		
+//		return "board/boardList";
 		return "board/boardList";
 	}
 	

@@ -1,0 +1,44 @@
+@charset "UTF-8";
+
+h3 {
+	font-weight:bold;
+}
+
+h3 > a{
+	text-decoration: none;
+	color:dodgerblue;
+}
+
+nav.navbar{
+	background:crimson;
+}
+
+.nav-link{
+	color: #E0FFFF;	
+}
+
+.nav-link:hover{
+	color:white;
+}
+
+.modal-dialog{
+	max-width:400px;
+}
+
+#idMsg, #pwMsg {
+	color:crimson;
+	display:none;
+}
+
+.welcomeMsg {
+	color:white;
+	font-size:13px;
+	line-height:32px;
+}
+
+
+
+
+
+
+

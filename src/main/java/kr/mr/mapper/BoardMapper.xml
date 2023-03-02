@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+   
+<mapper namespace="kr.mr.mapper.BoardMapper">
+  <!-- 전체 게시글 수 구하기 -->
+  <select id="totalCnt" resultType="Integer">
+	select count(*) total from tbl_board
+	<include refid="criteria"></include>	
+  </select>
+<!-- 
+ ${} : Statement , 파라미터값이 그대로 입력됨
+ #{} : PreparedStatement (? ? ?), 파라미터 값이 ' ' 감싸져서 입력 
+   	
+	  '%#{keyWord}%' ===> '%'aaa'%' 
+	  '%${keyWord}%' ===> '%aaa%'
+	  
+	  오라클은 문자 합치기 연산자 ||
+	  mySQL은    "          concat()
+--> 
+  <sql id = "criteria">
+  	<if test="searchType=='S'.toString()">
+  		<!-- where subject like '%${keyWord}%' -->
+  		where subject like concat('%',#{keyWord},'%')
+  		<!-- where subject like '%'||#{keyWord}||'%' -->
+  	</if>
+  	<if test="searchType=='C'.toString()">
+  		<!-- where contents like '%${keyWord}%' -->
+  		where contents like concat('%',#{keyWord},'%')
+  	</if>
+  	<if test="searchType=='W'.toString()">
+  		<!-- where writer like '%${keyWord}%' -->
+  		where writer like concat('%',#{keyWord},'%')
+  	</if>
+  </sql>	
+
+  <select id="getList" resultType="boardVO">			
+    select * from tbl_board 
+    <include refid="criteria"></include>
+    						<!-- startIndex, cntPerPage  -->
+    order by bid desc limit #{startIndex}, #{cntPerPage}
+  </select>
+    
+  <insert id="insert" parameterType="boardVO">
+  	insert into tbl_board(subject, contents, writer)
+  	values(#{subject}, #{contents}, #{writer})
+  </insert>
+  
+  <select id="view" parameterType="Integer" resultType="boardVO">
+  	select * from tbl_board where bid=#{bid}
+  </select>
+  
+  <delete id="delete" parameterType="Integer">
+  	delete from tbl_board where bid=#{bid}
+  </delete>
+  
+  <update id="update" parameterType="boardVO">
+  	update tbl_board set subject=#{subject}, contents=#{contents} where bid=#{bid}
+  </update>
+  
+  <update id="hitAdd" parameterType="Integer">
+  	update tbl_board set hit = hit + 1 where bid=#{bid}
+  </update>
+  
+</mapper>

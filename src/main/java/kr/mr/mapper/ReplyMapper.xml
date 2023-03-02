@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.mr.mapper.ReplyMapper">
+	<insert id="insert">
+		insert into tbl_reply(bid, reply_contents, replyer)
+		values(#{bid}, #{reply_contents}, #{replyer})
+	</insert>
+	
+	<select id="read" resultType="replyVO">
+		select * from tbl_reply where rno = #{rno}
+	</select>
+	
+	<update id="update">
+		update tbl_reply set reply_contents = #{reply_contents},
+		update_date = now() where rno = #{rno}
+	</update>
+	
+	<delete id="delete">
+		delete from tbl_reply where rno = #{rno}
+	</delete>
+	
+	<select id="getListByBid" resultType="replyVO">
+		select * from tbl_reply
+		where bid = #{bid} order by rno desc
+	</select>
+</mapper>

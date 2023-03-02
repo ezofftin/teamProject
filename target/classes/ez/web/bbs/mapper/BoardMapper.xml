@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="ez.web.bbs.mapper.BoardMapper">
+<!-- 전체 게시글 수 -->
+	<select id="totalCnt" resultType="Integer">
+		SELECT count(*) total FROM tbl_board
+		<include refid="criteria"></include>
+	</select>
+	
+	<sql id="criteria">
+	<!-- toString()은 문자열로 변환, 
+	문자열 변환이 없으면 문자형(ascii)으로 인식을 해서 NumberFormat 예외 발생  -->
+		<if test="searchType=='S'.toString()">
+			<!-- WHERE subject LIKE '%${keyWord}%') 가능하지만 보안이슈발생-->
+			WHERE subject LIKE CONCAT('%', #{keyWord} ,'%')
+		</if>
+		<!-- <if test="searchType=='C'.toString()"> -->		
+		<if test='searchType=="C"'>		
+			WHERE contents LIKE CONCAT('%', #{keyWord} ,'%')
+		</if>
+		<if test="searchType=='W'.toString()">		
+			WHERE writer LIKE CONCAT('%', #{keyWord} ,'%')
+		</if>
+		<if test='searchType=="SC"'>		
+			WHERE subject LIKE CONCAT('%', #{keyWord} ,'%') 
+				OR contents LIKE CONCAT('%', #{keyWord} ,'%')
+		</if>
+		<if test='searchType=="SW"'>		
+			WHERE subject LIKE CONCAT('%', #{keyWord} ,'%') 
+				OR writer LIKE CONCAT('%', #{keyWord} ,'%')
+		</if>
+		<if test='searchType=="SCW"'>		
+			WHERE subject LIKE CONCAT('%', #{keyWord} ,'%') 
+				OR contents LIKE CONCAT('%', #{keyWord} ,'%')
+				OR writer LIKE CONCAT('%', #{keyWord} ,'%')
+		</if>
+		
+	</sql>
+	
+	
+	<select id="getList" resultType="boardDTO">
+<!-- 		SELECT * FROM tbl_board; -->
+<!-- 		SELECT * FROM tbl_board limit 0, 10; -->		
+		SELECT * FROM tbl_board
+		<include refid="criteria"></include>
+		ORDER BY bid DESC LIMIT #{startIndex}, #{cntPerPage}
+	</select>
+	
+	<insert id="insert" parameterType="boardDTO">
+		INSERT INTO tbl_board(subject, contents, writer)
+		VALUES(#{subject}, #{contents}, #{writer}) 		
+	</insert>
+	
+	
+  	<select id="view" parameterType="Integer" resultType="boardDTO">
+  		SELECT * FROM tbl_board WHERE bid=#{bid}
+  	</select>
+  	
+  	<update id="update" parameterType="boardDTO">
+  		UPDATE tbl_board SET subject=#{subject}, contents=#{contents} WHERE bid=#{bid}
+  	</update>
+  	
+  	<delete id="delete" parameterType="Integer">
+  		DELETE FROM tbl_board WHERE bid=#{bid}
+  	</delete>
+  	
+  	<update id="hitAdd" parameterType="Integer">
+  		UPDATE tbl_board SET hit = hit+1 WHERE bid=#{bid}
+  	</update>
+  	
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="ez.web.bbs.mapper.ReplyMapper">
+	<!-- 댓글 수 구하기 -->
+	<select id="replyCnt" resultType="Integer">
+		SELECT count(*) FROM tbl_reply WHERE bid=#{bid};
+	</select>
+	
+	<!-- 댓글 추가 -->
+	<insert id="insert" parameterType="replyDTO">
+		INSERT INTO tbl_reply(bid, r_contents, replyer)
+		VALUES(#{bid}, #{r_contents}, #{replyer}) 		
+	</insert>
+	
+	<select id="select" resultType="replyDTO">
+		SELECT * FROM tbl_reply WHERE rno = #{rno}
+	</select>
+	
+	<delete id="delete">
+		DELETE FROM tbl_reply WHERE rno = #{rno}
+	</delete>
+	
+	<update id="update">
+		UPDATE tbl_reply SET r_contents = #{r_contents},
+		update_date = now() WHERE rno = #{rno}
+	</update>
+	<select id="getListByBid" resultType="replyDTO">
+		SELECT * FROM tbl_reply
+	<!-- 	WHERE bid = #{bid} ORDER BY rno DESC -->
+		WHERE bid = #{bid} ORDER BY rno DESC 
+		LIMIT #{startIndex}, #{cntPerPage}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+</mapper>
